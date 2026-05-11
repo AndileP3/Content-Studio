@@ -16,18 +16,32 @@ export default function Layout() {
     "tech-stack":    useRef(null),
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActiveSection(e.target.id);
-        });
-      },
-      { threshold: 0.35 }
-    );
-    Object.values(sectionRefs).forEach((r) => r.current && observer.observe(r.current));
-    return () => observer.disconnect();
-  }, []);
+useEffect(() => {
+  const refs = Object.values(sectionRefs);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          setActiveSection(e.target.id);
+        }
+      });
+    },
+    { threshold: 0.35 }
+  );
+
+  refs.forEach((r) => {
+    if (r.current) observer.observe(r.current);
+  });
+
+  return () => {
+    refs.forEach((r) => {
+      if (r.current) observer.unobserve(r.current);
+    });
+
+    observer.disconnect();
+  };
+}, [sectionRefs]);
 
   const scrollTo = (id) => {
     sectionRefs[id]?.current?.scrollIntoView({ behavior: "smooth" });
