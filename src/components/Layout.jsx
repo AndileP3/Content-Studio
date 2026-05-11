@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo , useRef } from "react";
 import Sidebar from "./Sidebar";
 import ChatArea from "./ChatArea";
 import InfoPanel from "./InfoPanel";
@@ -7,14 +7,16 @@ import "./Layout.css";
 export default function Layout() {
   const [activeSection, setActiveSection] = useState("overview");
 
-  const sectionRefs = {
-    overview:      useRef(null),
-    "content-types": useRef(null),
-    "how-it-works":  useRef(null),
-    "ai-model":      useRef(null),
-    features:        useRef(null),
-    "tech-stack":    useRef(null),
-  };
+
+  const sectionRefs = useMemo(
+  () => ({
+    home: useRef(null),
+    about: useRef(null),
+    contact: useRef(null),
+  }),
+  []
+);
+
 
 useEffect(() => {
   const refs = Object.values(sectionRefs);
